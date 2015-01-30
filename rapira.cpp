@@ -26,18 +26,18 @@ std::string filename;
 /*** Return an error ***/
 void error(std::exception& e)
 {
-	std::cout << filename;
-	std::cout << ':' << "Interpreter error";
-	std::cout << ':' << e.what() << std::endl;
+	std::cerr << filename;
+	std::cerr << ':' << "Interpreter error";
+	std::cerr << ':' << e.what() << std::endl;
 }
 
 /*** Return an error ***/
 void error(Excep& e)
 {
-	std::cout << "***Error occured in file \"" + filename + "\"!***" << std::endl;
-	std::cout << " ++Line number: " << e.getLineNumber() << std::endl;
-	std::cout << " ++Column number: " << e.getColumnNumber() << std::endl;
-	std::cout << '\t' << e.getMessage() << std::endl;
+	std::cerr << "***Error occured in file \"" + filename + "\"!***" << std::endl;
+	std::cerr << " ++Line number: " << e.getLineNumber() << std::endl;
+	std::cerr << " ++Column number: " << e.getColumnNumber() << std::endl;
+	std::cerr << '\t' << e.getMessage() << std::endl;
 }
 
 int main(int argc, char* argv[])
@@ -85,7 +85,9 @@ int main(int argc, char* argv[])
 	try
 	{
 		parser.parse();
+#ifndef PARSERONLY
 		parser.executeProgram();
+#endif
 	}
 	catch(Excep& e)
 	{

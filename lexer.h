@@ -67,10 +67,10 @@ class Lexer
 		bool hasChars();
 
 		/*** Peek at the next character ***/
-		char peekChar();
+		std::string peekChar();
 
 		/*** Get a character ***/
-		char getChar();
+		std::string getChar();
 
 		/*** Fail a finite state machine token test ***/
 		void fail();
@@ -84,11 +84,12 @@ class Lexer
 		void checkUnsignedInteger(Token &target);
 		void checkUnsignedReal(Token &target);
 
-		bool isWhitespace(char input);
-		bool isSpecial(char input);
-		bool isAlpha(char input);
-		bool isNumber(char input);
+		bool isWhitespace(std::string input);
+		bool isSpecial(std::string input);
+		bool isAlpha(std::string input);
+		bool isNumber(std::string input);
 
+		std::string tolower(std::string );
 };
 
 #endif

@@ -64,5 +64,10 @@ SRC= \
 ./rapira.cpp\
 ./token.cpp
 
+all: rapira rapiraParser
+
 rapira: $(SRC)
 	g++ -o rapira $(SRC)
+
+rapiraParser: $(SRC)
+	g++ -o rapiraParser -DPARSERONLY $(SRC)

@@ -74,13 +74,13 @@ Outcome Input::execute()
 			std::cin.getline(str, 256);
 			text = std::string(str);
 		}
-		while(text == "" || (!isInteger(text) && !isReal(text) && text != "yes" && text != "no"));
+		while(text == "" || (!isInteger(text) && !isReal(text) && text != "yes" && text != "да" && text != "no" && text != "нет"));
 
 		if(isInteger(text))
 			Assign(static_cast<Variable*>(exprs.at(i))->clone(), new Integer(text)).execute();
 		else if(isReal(text))
 			Assign(static_cast<Variable*>(exprs.at(i))->clone(), new Real(text)).execute();
-		else if(text == "yes")
+		else if((text == "yes") || (text == "да"))
 			Assign(static_cast<Variable*>(exprs.at(i))->clone(), new Logical(true)).execute();
 		else
 			Assign(static_cast<Variable*>(exprs.at(i))->clone(), new Logical(false)).execute();
