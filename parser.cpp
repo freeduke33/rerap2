@@ -279,7 +279,7 @@ Case* Parser::parseCase()
 
 		// Store statements in a NodeList
 		std::auto_ptr<NodeList> whenStmts(new NodeList());
-		while(hasTokens() && peekToken().getType() != T_WHEN && peekToken().getType() != T_ELSE && peekToken().getType() != T_ESAC)
+		while(hasTokens() && peekToken().getType() != T_WHEN && peekToken().getType() != T_ELSE && peekToken().getType() != T_ESAC && peekToken().getType() != T_G_END)
 		{
 			whenStmts->pushNode(parseStatement());
 			parseSeparation();
@@ -301,7 +301,7 @@ Case* Parser::parseCase()
 
 		// Store statements in a NodeList
 		std::auto_ptr<NodeList> elseStmts(new NodeList());
-		while(hasTokens() && peekToken().getType() != T_ESAC)
+		while(hasTokens() && peekToken().getType() != T_ESAC && peekToken().getType() != T_G_END)
 		{
 			elseStmts->pushNode(parseStatement());
 			parseSeparation();
@@ -309,7 +309,7 @@ Case* Parser::parseCase()
 		result->setElse(elseStmts.release());
 	}
 
-	if(!hasTokens() || peekToken().getType() != T_ESAC)
+	if(!hasTokens() || (peekToken().getType() != T_ESAC && peekToken().getType() != T_G_END))
 		throw ParserSyntaxException(getToken(), "Expected \"esac\" command!");
 	getToken();
 
