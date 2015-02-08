@@ -104,7 +104,7 @@
 #define T_EMPTY			65
 
 //gregfly67 extending
-#define T_G_ALL                 101
+#define T_G_END                 101
 
 class Token
 {

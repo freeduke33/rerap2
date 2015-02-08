@@ -579,7 +579,7 @@ If* Parser::parseIf()
 
 	// Parse if statement body
 	std::auto_ptr<NodeList> ifStmts(new NodeList());
-	while(hasTokens() && !(peekToken().getType() == T_ELSE || peekToken().getType() == T_FI))
+	while(hasTokens() && !(peekToken().getType() == T_ELSE || peekToken().getType() == T_FI || peekToken().getType() == T_G_END))
 	{
 		ifStmts->pushNode(parseStatement());
 		parseSeparation();
@@ -600,7 +600,7 @@ If* Parser::parseIf()
 		while(hasTokens() && peekToken().getType() == T_EOL)
 			getToken();
 
-		while(hasTokens() && peekToken().getType() != T_FI)
+		while(hasTokens() && (peekToken().getType() != T_FI || peekToken().getType() != T_G_END))
 		{
 			elseStmts->pushNode(parseStatement());
 			parseSeparation();
@@ -609,7 +609,7 @@ If* Parser::parseIf()
 		result->setElseStatements(elseStmts.release());
 	}
 
-	if(!hasTokens() || peekToken().getType() != T_FI)
+	if(!hasTokens() || (peekToken().getType() != T_FI && peekToken().getType() != T_G_END))
 		throw ParserSyntaxException(getToken(), "Expected \"fi\"!");
 	getToken();
 

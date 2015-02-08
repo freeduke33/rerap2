@@ -64,7 +64,8 @@ SRC= \
 ./rapira.cpp\
 ./token.cpp
 
-all: rapira rapiraParser
+all: rapira
+all2: rapira rapiraParser
 
 clean:
 	rm -rf rapira rapiraParser *.o
