@@ -339,7 +339,14 @@ Do* Parser::parseDo()
 		parseSeparation();
 	}
 
-	if(hasTokens() && peekToken().getType() == T_OD)
+        if(hasTokens(2) && peekToken().getType() == T_OD && peekToken(2).getType() == T_UNTIL) {
+            getToken();
+            getToken();
+            std::auto_ptr<Object> until(parseExpression());
+            result->setStatements(doStmts.release());
+            result->setUntilCondition(until.release());
+            return result.release();
+        } else if(hasTokens() && peekToken().getType() == T_OD)
 	{
 		getToken();
 		result->setStatements(doStmts.release());
