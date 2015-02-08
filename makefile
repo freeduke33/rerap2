@@ -66,6 +66,9 @@ SRC= \
 
 all: rapira rapiraParser
 
+clean:
+	rm -rf rapira rapiraParser *.o
+
 rapira: $(SRC)
 	g++ -o rapira $(SRC)
 
