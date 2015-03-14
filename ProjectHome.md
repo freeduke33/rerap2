@@ -1,0 +1,2 @@
+ReRap2 is an interpreter for the Russian and English dialects of the Rapira programming language. Rapira was a procedural programming language created in the Soviet Union in the 1980s ([en.wikipedia](http://en.wikipedia.org/wiki/Rapira), [ru.wikipedia](http://ru.wikipedia.org/wiki/%D0%A0%D0%B0%D0%BF%D0%B8%D1%80%D0%B0_%28%D1%8F%D0%B7%D1%8B%D0%BA_%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F%29)).
+This is fork for the project ReRap https://code.google.com/p/rerap/
