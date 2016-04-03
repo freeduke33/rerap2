@@ -84,7 +84,7 @@ Object* Select::evaluate()
 		if(cast2->getValue() < 1 || cast2->getValue() > cast1->getLength())
 			throw InvalidIndexException(getLineNumber(), getColumnNumber(), cast2->getValue(), 2);
 
-		return cast1->getChar(cast2->getValue() - 1);
+		return cast1->getChar(cast2->getValue());
 	}
 
 	if(obj1->getType() == OBJ_SEQUENCE)

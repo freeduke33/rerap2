@@ -117,9 +117,7 @@ Object* Slice::evaluate()
 		if(index2 > cast1->getLength())
 			throw InvalidIndexException(getLineNumber(), getColumnNumber(), index2, 2);
 
-		if(index1 > index2)
-			return new Text();
-		return new Text(cast1->getValue().substr(index1 - 1, index2 - index1 + 1));
+		return cast1->substr(index1, index2);
 	}
 
 	if(obj1->getType() == OBJ_SEQUENCE)

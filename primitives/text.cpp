@@ -17,6 +17,7 @@
 // along with ReRap.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "text.h"
+#include "../exceptions/invalidindex.h"
 #include <cwchar>
 #include <iostream>
 
@@ -39,6 +40,12 @@ Text::Text(Token tok)
 
 /*** Constructor ***/
 Text::Text(std::string pValue)
+{
+	setValue(pValue);
+}
+
+/*** Constructor ***/
+Text::Text(std::wstring pValue)
 {
 	setValue(pValue);
 }
@@ -84,6 +91,28 @@ void Text::setValue(std::string pValue)
 }
 
 /*** Set this text's value ***/
+void Text::setValue(std::wstring pValue)
+{
+	mbstate_t state;
+	const wchar_t* buf = pValue.c_str();
+	size_t len = wcsrtombs(NULL, &buf, 0, &state);
+	if (len > 0 && len != (size_t)-1) {
+		buf = pValue.c_str();
+		char* tmp = new char[len+1];
+		wcsrtombs(tmp, &buf, len, &state);
+		tmp[len] = '\0';
+		value = pValue;
+		utf8value = std::string(tmp);
+		delete[] tmp;
+	} else {
+		value.clear();
+		utf8value.clear();
+		if (len < 0)
+			std::cerr <<"UTF8 failed producing characters" <<std::endl;
+	}
+}
+
+/*** Set this text's value ***/
 void Text::setValue(wchar_t pValue)
 {
 	mbstate_t state;
@@ -116,8 +145,42 @@ Object* Text::evaluate()
 /*** Get a character ***/
 Text* Text::getChar(unsigned int index)
 {
-	return new Text(value.at(index));
+	return new Text(value.at(index - 1));
 }
+
+Text* Text::replace(unsigned int indexBeg, unsigned int indexEnd, Text* pReplacement)
+{
+	if(indexBeg > getLength() || indexBeg > indexEnd)
+		throw InvalidIndexException(getLineNumber(), getColumnNumber(), indexBeg);
+	if(indexEnd > getLength())
+		throw InvalidIndexException(getLineNumber(), getColumnNumber(), indexEnd);
+
+	std::wstring modified(value);
+	modified.replace(indexBeg - 1, indexEnd - indexBeg + 1, pReplacement->value);
+
+	return new Text(modified);
+}
+
+Text* Text::substr(unsigned int indexBeg, unsigned int indexEnd)
+{
+	if(indexBeg > indexEnd)
+		return new Text();
+
+	if(indexBeg > getLength())
+		throw InvalidIndexException(getLineNumber(), getColumnNumber(), indexBeg);
+	if(indexEnd > getLength())
+		throw InvalidIndexException(getLineNumber(), getColumnNumber(), indexEnd);
+
+	std::wstring modified(value.substr(indexBeg - 1, indexEnd - indexBeg + 1));
+
+	return new Text(modified);
+}
+
+size_t Text::find(Text* text)
+{
+	return value.find(text->value);
+}
+
 
 /*** Destructor ***/
 Text::~Text()

@@ -92,17 +92,9 @@ Outcome SliceAssign::execute()
 		Text* cast1 = static_cast<Text*>(evalTarget.get());
 		Text* cast2 = static_cast<Text*>(evalExpr.get());
 
-		if(numIndex1 > cast1->getLength() || numIndex1 > numIndex2)
-			throw InvalidIndexException(getLineNumber(), getColumnNumber(), numIndex1);
-		if(numIndex2 > cast1->getLength())
-			throw InvalidIndexException(getLineNumber(), getColumnNumber(), numIndex2);
+		Text* modified = cast1->replace(numIndex1, numIndex2, cast2);
 
-		std::string modified = "";
-		modified.append(cast1->getValue().substr(0, numIndex1 - 1));
-		modified.append(cast2->getValue());
-		modified.append(cast1->getValue().substr(numIndex2, cast1->getLength() - numIndex2));
-
-		return Assign(target->clone(), new Text(modified)).execute();
+		return Assign(target->clone(), modified).execute();
 	}
 
 	if(evalTarget->getType() == OBJ_SEQUENCE)

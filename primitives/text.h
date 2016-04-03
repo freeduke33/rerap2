@@ -59,16 +59,28 @@ class Text : public Object
 		/*** Clone this object ***/
 		Text* clone() const { return new Text(*this); }
 
+		Text* replace(unsigned int indexBeg, unsigned int indexEnd, Text* pReplacement);
+
+		Text* substr(unsigned int indexBeg, unsigned int indexEnd);
+
+		size_t find(Text* text);
+
 		/*** Destructor ***/
 		~Text();
 
 	protected:
 
 		/*** Constructor ***/
+		Text(std::wstring pValue);
+
+		/*** Constructor ***/
 		Text(wchar_t pValue);
 
 		/*** Set this text's value ***/
 		void setValue(wchar_t pValue);
+
+		/*** Set this text's value ***/
+		void setValue(std::wstring pValue);
 
 
 	private:

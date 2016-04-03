@@ -78,17 +78,13 @@ Outcome SelectAssign::execute()
 
 		Text* cast1 = static_cast<Text*>(obj1.get());
 		Text* cast2 = static_cast<Text*>(obj2.get());
-
-		if(numIndex > cast1->getLength())
-			throw InvalidIndexException(getLineNumber(), getColumnNumber(), numIndex);
+		
 
 		if(cast2->getLength() != 1)
 			throw InvalidAssignmentException(getLineNumber(), getColumnNumber(), target->getIdentifier(), "Cannot perform assignment with text value of length greater than one!");
 
-		std::string modified = cast1->getValue();
-		modified.replace(numIndex - 1, 1, cast2->getValue());
+		Text* modText = cast1->replace(numIndex, numIndex, cast2);
 
-		Text* modText = new Text(modified);
 		return Assign(target->clone(), modText).execute();
 	}
 

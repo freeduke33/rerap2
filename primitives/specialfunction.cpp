@@ -59,7 +59,7 @@ Object* SpecialFunction::evaluate()
 			Text* cast1 = static_cast<Text*>(arg1.get());
 			Text* cast2 = static_cast<Text*>(arg2.get());
 
-			size_t index = cast2->getValue().find(cast1->getValue());
+			size_t index = cast2->find(cast1);
 
 			if(index != std::string::npos)
 				return new Integer(index + 1);
