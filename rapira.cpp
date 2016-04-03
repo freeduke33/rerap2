@@ -20,6 +20,7 @@
 
 #include "lexer.h"
 #include "parser.h"
+#include <clocale>
 
 std::string filename;
 
@@ -42,6 +43,7 @@ void error(Excep& e)
 
 int main(int argc, char* argv[])
 {
+	std::setlocale(LC_ALL, "en_US.utf8");
 	if(argc != 2)
 	{
 		std::cerr << "Invalid number of arguments!" << std::endl;

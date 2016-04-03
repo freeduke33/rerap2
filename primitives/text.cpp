@@ -17,8 +17,7 @@
 // along with ReRap.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "text.h"
-#include <locale>
-#include <codecvt>
+#include <cwchar>
 #include <iostream>
 
 /*** Constructor ***/
@@ -45,7 +44,7 @@ Text::Text(std::string pValue)
 }
 
 /*** Constructor ***/
-Text::Text(char32_t pValue)
+Text::Text(wchar_t pValue)
 {
 	setValue(pValue);
 }
@@ -65,28 +64,40 @@ unsigned int Text::getLength()
 /*** Set this text's value ***/
 void Text::setValue(std::string pValue)
 {
-	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> uconv;
-	try {
-		value = uconv.from_bytes(pValue);
+	mbstate_t state;
+	const char* buf = pValue.c_str();
+	size_t len = mbsrtowcs(NULL, &buf, 0, &state);
+	if (len > 0 && len != (size_t)-1) {
+		buf = pValue.c_str();
+		wchar_t* tmp = new wchar_t[len+1];
+		mbsrtowcs(tmp, &buf, len, &state);
+		tmp[len] = L'\0';
+		value = std::wstring(tmp);
 		utf8value = pValue;
-	} catch(const std::range_error& e) {
-		utf8value = pValue.substr(0, uconv.converted());
-		value = uconv.from_bytes(utf8value);
-		std::cerr <<"UCS failed after producing " <<std::dec <<value.size() <<" characters" <<std::endl;
+		delete[] tmp;
+	} else {
+		value.clear();
+		utf8value.clear();
+		if (len < 0)
+			std::cerr <<"UCS failed producing characters" <<std::endl;
 	}
 }
 
 /*** Set this text's value ***/
-void Text::setValue(char32_t pValue)
+void Text::setValue(wchar_t pValue)
 {
-	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> uconv;
-	try {
-		utf8value = uconv.to_bytes(pValue);
-		value = std::u32string(1, pValue);
-	} catch(const std::range_error& e) {
-		utf8value.clear();
+	mbstate_t state;
+	char tmp[6 + 1]; // UTF8 max bytes + terminal symbol
+	size_t len = wcrtomb(tmp, pValue, &state);
+	if (len > 0 && len != (size_t)-1) {
+		tmp[len] = '\0';
+		utf8value = std::string(tmp);
+		value = std::wstring(1, pValue);
+	} else {
 		value.clear();
-		std::cerr <<"UCS failed producing single character" <<std::endl;
+		utf8value.clear();
+		if (len < 0)
+			std::cerr <<"UCS failed producing character" <<std::endl;
 	}
 }
 

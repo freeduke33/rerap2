@@ -65,17 +65,17 @@ class Text : public Object
 	protected:
 
 		/*** Constructor ***/
-		Text(char32_t pValue);
+		Text(wchar_t pValue);
 
 		/*** Set this text's value ***/
-		void setValue(char32_t pValue);
+		void setValue(wchar_t pValue);
 
 
 	private:
 
 		/*** The value of this text ***/
 		std::string utf8value;
-		std::u32string value;
+		std::wstring value;
 
 };
 
