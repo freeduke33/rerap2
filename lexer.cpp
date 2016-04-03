@@ -19,7 +19,7 @@
 #include "lexer.h"
 
 /*** Constructor ***/
-Lexer::Lexer(char* filename)
+Lexer::Lexer(const char* filename)
 {
 	// Open the input file
 	file.open(filename, std::ifstream::in);
@@ -131,7 +131,6 @@ Token Lexer::getNextToken()
 	checkKeyword(nextToken, "при", T_WHEN);
 	checkKeyword(nextToken, "while", T_WHILE);
 	checkKeyword(nextToken, "пока", T_WHILE);
-	checkKeyword(nextToken, "все", T_G_END);
 
 	checkKeyword(nextToken, "yes", T_YES);
 	checkKeyword(nextToken, "да", T_YES);

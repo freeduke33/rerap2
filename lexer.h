@@ -28,7 +28,7 @@ class Lexer
 	public:
 
 		/*** Constructor ***/
-		Lexer(char* filename);
+		Lexer(const char* filename);
 
 		/*** Determine if the file has been opened ***/
 		bool isOpen();
