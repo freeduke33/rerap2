@@ -71,7 +71,7 @@ clean:
 	rm -rf rapira rapiraParser *.o
 
 rapira: $(SRC)
-	g++ -o rapira $(SRC)
+	g++ --std=c++11 -o rapira $(SRC)
 
 rapiraParser: $(SRC)
-	g++ -o rapiraParser -DPARSERONLY $(SRC)
+	g++ --std=c++11 -o rapiraParser -DPARSERONLY $(SRC)

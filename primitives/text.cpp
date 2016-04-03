@@ -17,6 +17,9 @@
 // along with ReRap.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "text.h"
+#include <locale>
+#include <codecvt>
+#include <iostream>
 
 /*** Constructor ***/
 Text::Text()
@@ -42,7 +45,7 @@ Text::Text(std::string pValue)
 }
 
 /*** Constructor ***/
-Text::Text(char pValue)
+Text::Text(char32_t pValue)
 {
 	setValue(pValue);
 }
@@ -62,19 +65,35 @@ unsigned int Text::getLength()
 /*** Set this text's value ***/
 void Text::setValue(std::string pValue)
 {
-	value = pValue;
+	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> uconv;
+	try {
+		value = uconv.from_bytes(pValue);
+		utf8value = pValue;
+	} catch(const std::range_error& e) {
+		utf8value = pValue.substr(0, uconv.converted());
+		value = uconv.from_bytes(utf8value);
+		std::cerr <<"UCS failed after producing " <<std::dec <<value.size() <<" characters" <<std::endl;
+	}
 }
 
 /*** Set this text's value ***/
-void Text::setValue(char pValue)
+void Text::setValue(char32_t pValue)
 {
-	value = std::string(1, pValue);
+	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> uconv;
+	try {
+		utf8value = uconv.to_bytes(pValue);
+		value = std::u32string(1, pValue);
+	} catch(const std::range_error& e) {
+		utf8value.clear();
+		value.clear();
+		std::cerr <<"UCS failed producing single character" <<std::endl;
+	}
 }
 
 /*** Get this text's value ***/
 std::string Text::getValue()
 {
-	return value;
+	return utf8value;
 }
 
 /*** Evaluate this object ***/

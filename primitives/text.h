@@ -38,9 +38,6 @@ class Text : public Object
 		/*** Constructor ***/
 		Text(std::string pValue);
 
-		/*** Constructor ***/
-		Text(char pValue);
-
 		/*** Get this object's type ***/
 		unsigned char getType();
 
@@ -49,9 +46,6 @@ class Text : public Object
 
 		/*** Set this text's value ***/
 		void setValue(std::string pValue);
-
-		/*** Set this text's value ***/
-		void setValue(char pValue);
 
 		/*** Get this text's value ***/
 		std::string getValue();
@@ -68,10 +62,20 @@ class Text : public Object
 		/*** Destructor ***/
 		~Text();
 
+	protected:
+
+		/*** Constructor ***/
+		Text(char32_t pValue);
+
+		/*** Set this text's value ***/
+		void setValue(char32_t pValue);
+
+
 	private:
 
 		/*** The value of this text ***/
-		std::string value;
+		std::string utf8value;
+		std::u32string value;
 
 };
 
