@@ -1,77 +1,79 @@
 SRC= \
-./nodelist.cpp\
-./exceptions/missingargument.cpp\
-./exceptions/parsersyntax.cpp\
-./exceptions/excep.cpp\
-./exceptions/invalidinit.cpp\
-./exceptions/invalidindex.cpp\
-./exceptions/invalidtype.cpp\
-./exceptions/negativevalue.cpp\
-./exceptions/invalidassignment.cpp\
-./exceptions/dividebyzero.cpp\
-./exceptions/lexersyntax.cpp\
-./node.cpp\
-./varmanager.cpp\
-./outcome.cpp\
-./lexer.cpp\
-./primitives/logical.cpp\
-./primitives/integer.cpp\
-./primitives/real.cpp\
-./primitives/variable.cpp\
-./primitives/procedure.cpp\
-./primitives/text.cpp\
-./primitives/sequence.cpp\
-./primitives/specialfunction.cpp\
-./operations/unequal.cpp\
-./operations/multiply.cpp\
-./operations/remainder.cpp\
-./operations/add.cpp\
-./operations/select.cpp\
-./operations/not.cpp\
-./operations/greater.cpp\
-./operations/less.cpp\
-./operations/negate.cpp\
-./operations/length.cpp\
-./operations/subtract.cpp\
-./operations/intdivide.cpp\
-./operations/slice.cpp\
-./operations/greateq.cpp\
-./operations/call.cpp\
-./operations/divide.cpp\
-./operations/or.cpp\
-./operations/and.cpp\
-./operations/equal.cpp\
-./operations/exponent.cpp\
-./operations/lesseq.cpp\
-./object.cpp\
-./statements/repeat.cpp\
-./statements/return.cpp\
-./statements/extern.cpp\
-./statements/assign.cpp\
-./statements/for.cpp\
-./statements/intern.cpp\
-./statements/sliceassign.cpp\
-./statements/input.cpp\
-./statements/selectassign.cpp\
-./statements/do.cpp\
-./statements/output.cpp\
-./statements/exit.cpp\
-./statements/if.cpp\
-./statements/end.cpp\
-./statements/while.cpp\
-./statements/case.cpp\
-./parser.cpp\
-./rapira.cpp\
-./token.cpp
+./nodelist.o\
+./exceptions/missingargument.o\
+./exceptions/parsersyntax.o\
+./exceptions/excep.o\
+./exceptions/invalidinit.o\
+./exceptions/invalidindex.o\
+./exceptions/invalidtype.o\
+./exceptions/negativevalue.o\
+./exceptions/invalidassignment.o\
+./exceptions/dividebyzero.o\
+./exceptions/lexersyntax.o\
+./node.o\
+./varmanager.o\
+./outcome.o\
+./lexer.o\
+./primitives/logical.o\
+./primitives/integer.o\
+./primitives/real.o\
+./primitives/variable.o\
+./primitives/procedure.o\
+./primitives/text.o\
+./primitives/sequence.o\
+./primitives/specialfunction.o\
+./operations/unequal.o\
+./operations/multiply.o\
+./operations/remainder.o\
+./operations/add.o\
+./operations/select.o\
+./operations/not.o\
+./operations/greater.o\
+./operations/less.o\
+./operations/negate.o\
+./operations/length.o\
+./operations/subtract.o\
+./operations/intdivide.o\
+./operations/slice.o\
+./operations/greateq.o\
+./operations/call.o\
+./operations/divide.o\
+./operations/or.o\
+./operations/and.o\
+./operations/equal.o\
+./operations/exponent.o\
+./operations/lesseq.o\
+./object.o\
+./statements/repeat.o\
+./statements/return.o\
+./statements/extern.o\
+./statements/assign.o\
+./statements/for.o\
+./statements/intern.o\
+./statements/sliceassign.o\
+./statements/input.o\
+./statements/selectassign.o\
+./statements/do.o\
+./statements/output.o\
+./statements/exit.o\
+./statements/if.o\
+./statements/end.o\
+./statements/while.o\
+./statements/case.o\
+./parser.o\
+./token.o
 
 all: rapira
 all2: rapira rapiraParser
 
 clean:
-	rm -rf rapira rapiraParser *.o
+	rm -f rapira rapiraParser *.o statements/*.o operations/*.o primitives/*.o exceptions/*.o
+
+%.o: %.cpp
+	g++ -c --std=c++11 -o $@ $<
 
 rapira: $(SRC)
-	g++ --std=c++11 -o rapira $(SRC)
+	g++ -o rapira rapira.cpp $(SRC)
 
 rapiraParser: $(SRC)
-	g++ --std=c++11 -o rapiraParser -DPARSERONLY $(SRC)
+	g++ --std=c++11 -o rapiraParser -DPARSERONLY rapira.cpp $(SRC)
