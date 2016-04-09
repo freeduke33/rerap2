@@ -600,7 +600,7 @@ If* Parser::parseIf()
 		while(hasTokens() && peekToken().getType() == T_EOL)
 			getToken();
 
-		while(hasTokens() && (peekToken().getType() != T_FI || peekToken().getType() != T_G_END))
+		while(hasTokens() && !(peekToken().getType() == T_FI || peekToken().getType() == T_G_END))
 		{
 			elseStmts->pushNode(parseStatement());
 			parseSeparation();
