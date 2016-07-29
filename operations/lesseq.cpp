@@ -53,7 +53,7 @@ void LessEq::setArgument2(Object* pArg)
 /*** Evaluate this object ***/
 Object* LessEq::evaluate()
 {
-	std::auto_ptr<Object> greatOperation;
+	std::unique_ptr<Object> greatOperation;
 	try
 	{
 		greatOperation.reset(Greater(arg1->clone(), arg2->clone()).evaluate());

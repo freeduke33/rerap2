@@ -82,9 +82,9 @@ Object* Slice::evaluate()
 	if(arg1 == 0)
 		throw MissingArgumentException(getLineNumber(), getColumnNumber(), OBJ_TEXT | OBJ_SEQUENCE, 1);
 
-	std::auto_ptr<Object> obj1(arg1->evaluate());
-	std::auto_ptr<Object> obj2;
-	std::auto_ptr<Object> obj3;
+	std::unique_ptr<Object> obj1(arg1->evaluate());
+	std::unique_ptr<Object> obj2;
+	std::unique_ptr<Object> obj3;
 
 	if(arg2 != 0)
 		obj2.reset(arg2->evaluate());

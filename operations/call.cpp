@@ -51,7 +51,7 @@ void Call::pushArgument(Object* pArg, bool isInOut)
 /*** Execute this node ***/
 Outcome Call::execute()
 {
-	std::auto_ptr<Object> evalCall(evaluate());
+	std::unique_ptr<Object> evalCall(evaluate());
 	return Outcome(S_SUCCESS);
 }
 
@@ -62,7 +62,7 @@ Object* Call::evaluate()
 		throw MissingArgumentException(getLineNumber(), getColumnNumber(), OBJ_PROCEDURE | OBJ_FUNCTION, 1);
 
 	// Evaluate the object specified as the procedure
-	std::auto_ptr<Object> idenEval(iden->evaluate());
+	std::unique_ptr<Object> idenEval(iden->evaluate());
 
 	// Execute a special function if we need
 	if(idenEval->getType() == OBJ_SPFUNCTION)
@@ -75,7 +75,7 @@ Object* Call::evaluate()
 				throw Excep(getLineNumber(), getColumnNumber(), "Special functions cannot receive in-out arguments!");
 			spf->addArgument(args.at(i).first->clone());
 		}
-		std::auto_ptr<Object> retVal(spf->evaluate());
+		std::unique_ptr<Object> retVal(spf->evaluate());
 		return retVal.release();
 	}
 
@@ -84,7 +84,7 @@ Object* Call::evaluate()
 		throw InvalidTypeException(getLineNumber(), getColumnNumber(), OBJ_PROCEDURE | OBJ_FUNCTION, idenEval->getType());
 
 	// Cast the evaluated identifier to a procedure
-	std::auto_ptr<Procedure> proc(static_cast<Procedure*>(idenEval.release()));
+	std::unique_ptr<Procedure> proc(static_cast<Procedure*>(idenEval.release()));
 
 	// Confirm that the number of arguments in this call
 	// is equal to the number of parameters accepted by the procedure
@@ -116,7 +116,7 @@ Object* Call::evaluate()
 			throw Excep(getLineNumber(), getColumnNumber(), "Argument in/in-out type did not match parameter in/in-out type!");
 
 		// Evaluate the argument
-		std::auto_ptr<Object> argEval(args.at(i).first->evaluate());
+		std::unique_ptr<Object> argEval(args.at(i).first->evaluate());
 
 		// If this argument is a variable and
 		// in-out, keep track of it!
@@ -150,7 +150,7 @@ Object* Call::evaluate()
 		proc->getExtern()->execute();
 
 	// Execute the statements of the procedure
-	std::auto_ptr<Object> retVal;
+	std::unique_ptr<Object> retVal;
 	Outcome retOut = proc->execute();
 	retVal.reset(retOut.getObject());
 

@@ -47,7 +47,7 @@ void Assign::setExpression(Object* pExpr)
 /*** Execute this node ***/
 Outcome Assign::execute()
 {
-	std::auto_ptr<Object> var(target->evaluate());
+	std::unique_ptr<Object> var(target->evaluate());
 	if(var->getType() == OBJ_PROCEDURE || var->getType() == OBJ_FUNCTION)
 		throw InvalidAssignmentException(getLineNumber(), getColumnNumber(), target->getIdentifier(), "Cannot overwrite a procedure or function!");
 

@@ -55,7 +55,7 @@ void SelectAssign::setExpression(Object* pExpr)
 /*** Execute this node ***/
 Outcome SelectAssign::execute()
 {
-	std::auto_ptr<Object> indexObject(index->evaluate());
+	std::unique_ptr<Object> indexObject(index->evaluate());
 
 	// Confirm that the index given is an integer
 	if(indexObject->getType() != OBJ_INTEGER)
@@ -68,8 +68,8 @@ Outcome SelectAssign::execute()
 		throw InvalidIndexException(getLineNumber(), getColumnNumber(), numIndex);
 
 	// Store the evaluated target and expr
-	std::auto_ptr<Object> obj1(target->evaluate());
-	std::auto_ptr<Object> obj2(expr->evaluate());
+	std::unique_ptr<Object> obj1(target->evaluate());
+	std::unique_ptr<Object> obj2(expr->evaluate());
 
 	if(obj1->getType() == OBJ_TEXT)
 	{
@@ -95,7 +95,7 @@ Outcome SelectAssign::execute()
 		if(numIndex > cast->getLength())
 			throw InvalidIndexException(getLineNumber(), getColumnNumber(), numIndex);
 
-		std::auto_ptr<Sequence> seqClone(cast->clone());
+		std::unique_ptr<Sequence> seqClone(cast->clone());
 		seqClone->setObject(numIndex - 1, obj2->clone());
 		return Assign(target->clone(), seqClone.release()).execute();
 	}

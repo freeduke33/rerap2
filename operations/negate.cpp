@@ -48,7 +48,7 @@ Object* Negate::evaluate()
 	if(arg == 0)
 		throw MissingArgumentException(getLineNumber(), getColumnNumber(), OBJ_INTEGER | OBJ_REAL, 1);
 
-	std::auto_ptr<Object> obj(arg->evaluate());
+	std::unique_ptr<Object> obj(arg->evaluate());
 
 	if(obj->getType() == OBJ_INTEGER)
 	{

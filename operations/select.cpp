@@ -70,8 +70,8 @@ Object* Select::evaluate()
 	if(arg2 == 0)
 		throw MissingArgumentException(getLineNumber(), getColumnNumber(), OBJ_INTEGER, 1);
 
-	std::auto_ptr<Object> obj1(arg1->evaluate());
-	std::auto_ptr<Object> obj2(arg2->evaluate());
+	std::unique_ptr<Object> obj1(arg1->evaluate());
+	std::unique_ptr<Object> obj2(arg2->evaluate());
 
 	if(obj2->getType() != OBJ_INTEGER)
 		throw InvalidTypeException(getLineNumber(), getColumnNumber(), OBJ_INTEGER, obj2->getType(), 2);

@@ -89,7 +89,7 @@ Outcome For::execute()
 	if(from != 0)
 	{
 		// Evaluate the 
-		std::auto_ptr<Object> fromEval(from->evaluate());
+		std::unique_ptr<Object> fromEval(from->evaluate());
 		if(fromEval->getType() != OBJ_INTEGER && fromEval->getType() != OBJ_REAL)
 			throw InvalidTypeException(getLineNumber(), getColumnNumber(), OBJ_INTEGER | OBJ_REAL, fromEval->getType());
 		Assign(forVar->clone(), fromEval.release()).execute();
@@ -105,7 +105,7 @@ Outcome For::execute()
 		// Check the while condition, if present
 		if(whileCond != 0)
 		{
-			std::auto_ptr<Object> whileCondEval(whileCond->evaluate());
+			std::unique_ptr<Object> whileCondEval(whileCond->evaluate());
 			if(whileCondEval->getType() != OBJ_LOGICAL)
 				throw InvalidTypeException(getLineNumber(), getColumnNumber(), OBJ_LOGICAL, whileCondEval->getType());
 			bool whileCondResult = static_cast<Logical*>(whileCondEval.get())->getValue();
@@ -117,10 +117,10 @@ Outcome For::execute()
 		// Check the to value
 		if(to != 0)
 		{
-			std::auto_ptr<Object> toEval(to->evaluate());
+			std::unique_ptr<Object> toEval(to->evaluate());
 
 			// Store the step value evaluated
-			std::auto_ptr<Object> stepEval;
+			std::unique_ptr<Object> stepEval;
 			if(step == 0)
 				stepEval.reset(new Integer(1));
 			else
@@ -130,7 +130,7 @@ Outcome For::execute()
 			if(stepEval->getType() != OBJ_INTEGER && stepEval->getType() != OBJ_REAL)
 				throw InvalidTypeException(getLineNumber(), getColumnNumber(), OBJ_INTEGER | OBJ_REAL, stepEval->getType());
 
-			std::auto_ptr<Real> castStep;
+			std::unique_ptr<Real> castStep;
 			// Cast the step value to a real
 			if(stepEval->getType() == OBJ_INTEGER)
 				castStep.reset(new Real(static_cast<Integer*>(stepEval.get())->getValue()));
@@ -141,12 +141,12 @@ Outcome For::execute()
 
 			if(castStep->getValue() > 0)
 			{
-				std::auto_ptr<Object> operation(Greater(forVar->clone(), toEval.release()).evaluate());
+				std::unique_ptr<Object> operation(Greater(forVar->clone(), toEval.release()).evaluate());
 				toCondition = static_cast<Logical*>(operation.get())->getValue();
 			}
 			if(castStep->getValue() < 0)
 			{
-				std::auto_ptr<Object> operation(Less(forVar->clone(), toEval.release()).evaluate());
+				std::unique_ptr<Object> operation(Less(forVar->clone(), toEval.release()).evaluate());
 				toCondition = static_cast<Logical*>(operation.get())->getValue();
 			}
 
@@ -160,22 +160,22 @@ Outcome For::execute()
 		// Modify forVar based on step
 		if(step == 0)
 		{
-			std::auto_ptr<Object> addOperation(Add(forVar->clone(), new Integer(1)).evaluate());
+			std::unique_ptr<Object> addOperation(Add(forVar->clone(), new Integer(1)).evaluate());
 			Assign(forVar->clone(), addOperation.release()).execute();
 		}
 		else
 		{
-			std::auto_ptr<Object> stepEval(step->evaluate());
+			std::unique_ptr<Object> stepEval(step->evaluate());
 			if(stepEval->getType() != OBJ_INTEGER && stepEval->getType() != OBJ_REAL)
 				throw InvalidTypeException(getLineNumber(), getColumnNumber(), OBJ_INTEGER | OBJ_REAL, stepEval->getType());
-			std::auto_ptr<Object> addOperation(Add(forVar->clone(), stepEval.release()).evaluate());
+			std::unique_ptr<Object> addOperation(Add(forVar->clone(), stepEval.release()).evaluate());
 			Assign(forVar->clone(), addOperation.release()).execute();
 		}
 
 		// Check the until condition, if present
 		if(untilCond != 0)
 		{
-			std::auto_ptr<Object> untilEval(untilCond->evaluate());
+			std::unique_ptr<Object> untilEval(untilCond->evaluate());
 			if(untilEval->getType() != OBJ_LOGICAL)
 				throw InvalidTypeException(getLineNumber(), getColumnNumber(), OBJ_LOGICAL, untilEval->getType());
 			bool untilResult = static_cast<Logical*>(untilEval.get())->getValue();

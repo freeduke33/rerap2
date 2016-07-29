@@ -58,11 +58,11 @@ Object* Or::evaluate()
 	if(arg2 == 0)
 		throw MissingArgumentException(getLineNumber(), getColumnNumber(), OBJ_LOGICAL, 2);
 
-	std::auto_ptr<Object> obj1(arg1->evaluate());
+	std::unique_ptr<Object> obj1(arg1->evaluate());
 	if(obj1->getType() != OBJ_LOGICAL)
 		throw InvalidTypeException(getLineNumber(), getColumnNumber(), OBJ_LOGICAL, obj1->getType(), 1);
 
-	std::auto_ptr<Object> obj2(arg2->evaluate());
+	std::unique_ptr<Object> obj2(arg2->evaluate());
 	if(obj2->getType() != OBJ_LOGICAL)
 		throw InvalidTypeException(getLineNumber(), getColumnNumber(), OBJ_LOGICAL, obj2->getType(), 2);
 

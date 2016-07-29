@@ -47,7 +47,7 @@ void If::setElseStatements(NodeList* pElseStmts)
 /*** Execute this node ***/
 Outcome If::execute()
 {
-	std::auto_ptr<Object> ifEval(ifExpr->evaluate());
+	std::unique_ptr<Object> ifEval(ifExpr->evaluate());
 
 	if(ifEval->getType() != OBJ_LOGICAL)
 		throw InvalidTypeException(ifExpr->getLineNumber(), ifExpr->getColumnNumber(), OBJ_LOGICAL, ifEval->getType());

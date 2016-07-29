@@ -69,7 +69,7 @@ Outcome Do::execute()
 		// Check if an until condition needs to be checked
 		if(until != 0)
 		{
-			std::auto_ptr<Object> untilEval(until->evaluate());
+			std::unique_ptr<Object> untilEval(until->evaluate());
 
 			if(untilEval->getType() != OBJ_LOGICAL)
 				throw InvalidTypeException(getLineNumber(), getColumnNumber(), OBJ_LOGICAL, untilEval->getType());

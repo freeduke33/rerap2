@@ -196,13 +196,13 @@ Assign* Parser::parseAssign()
 	if(!hasTokens() || peekToken().getType() != T_IDENTIFIER)
 		throw ParserSyntaxException(getToken(), "Expected variable identifier!");
 
-	std::auto_ptr<Variable> target(new Variable(getToken().getLexeme()));
+	std::unique_ptr<Variable> target(new Variable(getToken().getLexeme()));
 
 	if(!hasTokens() || peekToken().getType() != T_ASSIGN)
 		throw ParserSyntaxException(getToken(), "Expected ':='!");
 	Token tok = getToken();
 
-	std::auto_ptr<Object> expr(parseExpression());
+	std::unique_ptr<Object> expr(parseExpression());
 
 	Assign* as = new Assign(target.release(), expr.release());
 	as->setLineNumber(tok.getLineNumber());
@@ -218,10 +218,10 @@ Call* Parser::parseCall()
 		getToken();
 
 	/*** Parse a value ***/
-	std::auto_ptr<Object> iden(parseValue());
+	std::unique_ptr<Object> iden(parseValue());
 
 	/*** Parse the call ***/
-	std::auto_ptr<Object> call(parseSubExpression1a(iden.release()));
+	std::unique_ptr<Object> call(parseSubExpression1a(iden.release()));
 
 	/*** Check for invalid types ***/
 	if(call->getType() != OP_CALL)
@@ -242,7 +242,7 @@ Case* Parser::parseCase()
 		getToken();
 
 	// Create a case object
-	std::auto_ptr<Case> result(new Case());
+	std::unique_ptr<Case> result(new Case());
 	result->setLineNumber(tok.getLineNumber());
 	result->setColumnNumber(tok.getColumnNumber());
 
@@ -258,7 +258,7 @@ Case* Parser::parseCase()
 	while(hasTokens() && peekToken().getType() == T_WHEN)
 	{
 		// Create a nodelist to store when conditions
-		std::auto_ptr<NodeList> whenExprs(new NodeList());
+		std::unique_ptr<NodeList> whenExprs(new NodeList());
 
 		// Store the when conditions
 		do
@@ -278,7 +278,7 @@ Case* Parser::parseCase()
 			getToken();
 
 		// Store statements in a NodeList
-		std::auto_ptr<NodeList> whenStmts(new NodeList());
+		std::unique_ptr<NodeList> whenStmts(new NodeList());
 		while(hasTokens() && peekToken().getType() != T_WHEN && peekToken().getType() != T_ELSE && peekToken().getType() != T_ESAC && peekToken().getType() != T_G_END)
 		{
 			whenStmts->pushNode(parseStatement());
@@ -300,7 +300,7 @@ Case* Parser::parseCase()
 			getToken();
 
 		// Store statements in a NodeList
-		std::auto_ptr<NodeList> elseStmts(new NodeList());
+		std::unique_ptr<NodeList> elseStmts(new NodeList());
 		while(hasTokens() && peekToken().getType() != T_ESAC && peekToken().getType() != T_G_END)
 		{
 			elseStmts->pushNode(parseStatement());
@@ -327,12 +327,12 @@ Do* Parser::parseDo()
 	while(hasTokens() && peekToken().getType() == T_EOL)
 		getToken();
 
-	std::auto_ptr<Do> result(new Do());
+	std::unique_ptr<Do> result(new Do());
 	result->setLineNumber(tok.getLineNumber());
 	result->setColumnNumber(tok.getColumnNumber());
 
 	// Add commands until "od" or "until" is found
-	std::auto_ptr<NodeList> doStmts(new NodeList());
+	std::unique_ptr<NodeList> doStmts(new NodeList());
 	while(hasTokens() && !(peekToken().getType() == T_OD || peekToken().getType() == T_UNTIL))
 	{
 		doStmts->pushNode(parseStatement());
@@ -342,7 +342,7 @@ Do* Parser::parseDo()
         if(hasTokens(2) && peekToken().getType() == T_OD && peekToken(2).getType() == T_UNTIL) {
             getToken();
             getToken();
-            std::auto_ptr<Object> until(parseExpression());
+            std::unique_ptr<Object> until(parseExpression());
             result->setStatements(doStmts.release());
             result->setUntilCondition(until.release());
             return result.release();
@@ -355,7 +355,7 @@ Do* Parser::parseDo()
 	else if(hasTokens() && peekToken().getType() == T_UNTIL)
 	{
 		getToken();
-		std::auto_ptr<Object> until(parseExpression());
+		std::unique_ptr<Object> until(parseExpression());
 		result->setStatements(doStmts.release());
 		result->setUntilCondition(until.release());
 		return result.release();
@@ -404,7 +404,7 @@ Extern* Parser::parseExtern()
 	getToken();
 
 	// Loop through, storing variable names
-	std::auto_ptr<Extern> result(new Extern());
+	std::unique_ptr<Extern> result(new Extern());
 	result->setLineNumber(tok.getLineNumber());
 	result->setColumnNumber(tok.getColumnNumber());
 	while(hasTokens() && peekToken().getType() == T_IDENTIFIER)
@@ -427,7 +427,7 @@ For* Parser::parseFor()
 	Token tok = getToken();
 
 	// Create a For object
-	std::auto_ptr<For> result(new For());
+	std::unique_ptr<For> result(new For());
 	result->setLineNumber(tok.getLineNumber());
 	result->setColumnNumber(tok.getColumnNumber());
 
@@ -475,7 +475,7 @@ For* Parser::parseFor()
 		getToken();
 
 	// Add commands until "od" or "until" is found
-	std::auto_ptr<NodeList> stmts(new NodeList());
+	std::unique_ptr<NodeList> stmts(new NodeList());
 	while(hasTokens() && peekToken().getType() != T_OD && peekToken().getType() != T_UNTIL)
 	{
 		stmts->pushNode(parseStatement());
@@ -515,7 +515,7 @@ Input* Parser::parseInput()
 	if(!hasTokens() || peekToken().getType() != T_COLON)
 		throw ParserSyntaxException(getToken(), "Expected ':'.");
 
-	std::auto_ptr<Input> result(new Input(getText));
+	std::unique_ptr<Input> result(new Input(getText));
 	result->setLineNumber(tok.getLineNumber());
 	result->setColumnNumber(tok.getColumnNumber());
 
@@ -543,7 +543,7 @@ Intern* Parser::parseIntern()
 	getToken();
 
 	// Loop through, storing variable names
-	std::auto_ptr<Intern> result(new Intern());
+	std::unique_ptr<Intern> result(new Intern());
 	result->setLineNumber(tok.getLineNumber());
 	result->setColumnNumber(tok.getColumnNumber());
 
@@ -567,7 +567,7 @@ If* Parser::parseIf()
 	Token tok = getToken();
 
 	// Parse the condition
-	std::auto_ptr<Object> expr(parseExpression());
+	std::unique_ptr<Object> expr(parseExpression());
 
 	if(!hasTokens() || peekToken().getType() != T_THEN)
 		throw ParserSyntaxException(getToken(), "Expected \"then\"!");
@@ -578,7 +578,7 @@ If* Parser::parseIf()
 		getToken();
 
 	// Parse if statement body
-	std::auto_ptr<NodeList> ifStmts(new NodeList());
+	std::unique_ptr<NodeList> ifStmts(new NodeList());
 	while(hasTokens() && !(peekToken().getType() == T_ELSE || peekToken().getType() == T_FI || peekToken().getType() == T_G_END))
 	{
 		ifStmts->pushNode(parseStatement());
@@ -586,7 +586,7 @@ If* Parser::parseIf()
 	}
 
 	// Create the new if object
-	std::auto_ptr<If> result(new If());
+	std::unique_ptr<If> result(new If());
 	result->setLineNumber(tok.getLineNumber());
 	result->setColumnNumber(tok.getColumnNumber());
 
@@ -594,7 +594,7 @@ If* Parser::parseIf()
 	if(hasTokens() && peekToken().getType() == T_ELSE)
 	{
 		getToken();
-		std::auto_ptr<NodeList> elseStmts(new NodeList());
+		std::unique_ptr<NodeList> elseStmts(new NodeList());
 
 		// Parse any newlines
 		while(hasTokens() && peekToken().getType() == T_EOL)
@@ -637,7 +637,7 @@ Output* Parser::parseOutput()
 	if(!hasTokens() || peekToken().getType() != T_COLON)
 		throw ParserSyntaxException(getToken(), "Expected ':'.");
 
-	std::auto_ptr<Output> result(new Output(lineFeed));
+	std::unique_ptr<Output> result(new Output(lineFeed));
 	result->setLineNumber(tok.getLineNumber());
 	result->setColumnNumber(tok.getColumnNumber());
 
@@ -673,7 +673,7 @@ void Parser::parseProcedure()
 		throw ParserSyntaxException(tok, "An object with the identifier \"" + procName + "\" already exists!");
 
 	// Create a new procedure object
-	std::auto_ptr<Procedure> proc(new Procedure());
+	std::unique_ptr<Procedure> proc(new Procedure());
 	proc->setLineNumber(tokProc.getLineNumber());
 	proc->setColumnNumber(tokProc.getColumnNumber());
 
@@ -719,7 +719,7 @@ void Parser::parseProcedure()
 	parseSeparation();
 
 	// Create a NodeList to store statements
-	std::auto_ptr<NodeList> stmts(new NodeList());
+	std::unique_ptr<NodeList> stmts(new NodeList());
 
 	// Parse intern/extern commands
 	if(hasTokens() && peekToken().getType() == T_INTERN)
@@ -780,7 +780,7 @@ void Parser::parseFunction()
 		throw ParserSyntaxException(tok, "An object with the identifier \"" + procName + "\" already exists!");
 
 	// Create a new procedure object
-	std::auto_ptr<Procedure> proc(new Procedure(true));
+	std::unique_ptr<Procedure> proc(new Procedure(true));
 	proc->setLineNumber(tokFun.getLineNumber());
 	proc->setColumnNumber(tokFun.getColumnNumber());
 
@@ -823,7 +823,7 @@ void Parser::parseFunction()
 	parseSeparation();
 
 	// Create a NodeList to store statements
-	std::auto_ptr<NodeList> stmts(new NodeList());
+	std::unique_ptr<NodeList> stmts(new NodeList());
 
 	// Parse intern/extern commands
 	if(hasTokens() && peekToken().getType() == T_INTERN)
@@ -876,7 +876,7 @@ Repeat* Parser::parseRepeat()
 		getToken();
 
 	// Create a new repeat object
-	std::auto_ptr<Repeat> result(new Repeat());
+	std::unique_ptr<Repeat> result(new Repeat());
 	result->setLineNumber(tok.getLineNumber());
 	result->setColumnNumber(tok.getColumnNumber());
 
@@ -907,7 +907,7 @@ Repeat* Parser::parseRepeat()
 		getToken();
 
 	// Add commands until "od" or "until" is found
-	std::auto_ptr<NodeList> stmts(new NodeList());
+	std::unique_ptr<NodeList> stmts(new NodeList());
 	while(hasTokens() && !(peekToken().getType() == T_OD || peekToken().getType() == T_UNTIL))
 	{
 		stmts->pushNode(parseStatement());
@@ -935,13 +935,13 @@ Return* Parser::parseReturn()
 		throw ParserSyntaxException(getToken(), "Expected \"return\" command!");
 	Token tok = getToken();
 
-	std::auto_ptr<Return> ret(new Return());
+	std::unique_ptr<Return> ret(new Return());
 	ret->setLineNumber(tok.getLineNumber());
 	ret->setColumnNumber(tok.getColumnNumber());
 
 	if(!hasTokens() || peekToken().getType() == T_EOL)
 		return ret.release();
-	std::auto_ptr<Object> expr(parseExpression());
+	std::unique_ptr<Object> expr(parseExpression());
 	ret->setExpression(expr.release());
 	return ret.release();
 }
@@ -953,13 +953,13 @@ Node* Parser::parseSliceSelectAssign()
 		throw ParserSyntaxException(getToken(), "Expected variable identifier!");
 
 	// Store the variable
-	std::auto_ptr<Variable> target(new Variable(getToken()));
+	std::unique_ptr<Variable> target(new Variable(getToken()));
 
 	if(!hasTokens() || peekToken().getType() != T_LBRACKET)
 		throw ParserSyntaxException(getToken(), "Expected '['!");
 	Token tok = getToken();
 
-	std::auto_ptr<Object> index1(parseExpression());
+	std::unique_ptr<Object> index1(parseExpression());
 
 	if(hasTokens() && peekToken().getType() == T_RBRACKET)
 	{
@@ -969,7 +969,7 @@ Node* Parser::parseSliceSelectAssign()
 			throw ParserSyntaxException(getToken(), "Expected ':='!");
 		getToken();
 
-		std::auto_ptr<Object> expr(parseExpression());
+		std::unique_ptr<Object> expr(parseExpression());
 
 		SelectAssign* result = new SelectAssign(target.release(), index1.release(), expr.release());
 		result->setLineNumber(tok.getLineNumber());
@@ -981,7 +981,7 @@ Node* Parser::parseSliceSelectAssign()
 		throw ParserSyntaxException(getToken(), "Expected ':' or ']'!");
 	getToken();
 
-	std::auto_ptr<Object> index2(parseExpression());
+	std::unique_ptr<Object> index2(parseExpression());
 
 	if(!hasTokens() || peekToken().getType() != T_RBRACKET)
 		throw ParserSyntaxException(getToken(), "Expected ']'!");
@@ -991,7 +991,7 @@ Node* Parser::parseSliceSelectAssign()
 		throw ParserSyntaxException(getToken(), "Expected ':='!");
 	getToken();
 
-	std::auto_ptr<Object> expr(parseExpression());
+	std::unique_ptr<Object> expr(parseExpression());
 
 	SliceAssign* result = new SliceAssign(target.release(), index1.release(), index2.release(), expr.release());
 	result->setLineNumber(tok.getLineNumber());
@@ -1007,7 +1007,7 @@ While* Parser::parseWhile()
 	Token tok = getToken();
 
 	// Store the condition
-	std::auto_ptr<Object> cond(parseExpression());
+	std::unique_ptr<Object> cond(parseExpression());
 
 	if(!hasTokens() || peekToken().getType() != T_DO)
 		ParserSyntaxException(getToken(), "Expected \"do\" command!");
@@ -1018,14 +1018,14 @@ While* Parser::parseWhile()
 		getToken();
 
 	// Add commands until "od" or "until" is found
-	std::auto_ptr<NodeList> whileStmts(new NodeList());
+	std::unique_ptr<NodeList> whileStmts(new NodeList());
 	while(hasTokens() && !(peekToken().getType() == T_OD || peekToken().getType() == T_UNTIL))
 	{
 		whileStmts->pushNode(parseStatement());
 		parseSeparation();
 	}
 
-	std::auto_ptr<While> result(new While());
+	std::unique_ptr<While> result(new While());
 	result->setLineNumber(tok.getLineNumber());
 	result->setColumnNumber(tok.getColumnNumber());
 
@@ -1040,7 +1040,7 @@ While* Parser::parseWhile()
 	if(hasTokens() && peekToken().getType() == T_UNTIL)
 	{
 		getToken();
-		std::auto_ptr<Object> until(parseExpression());
+		std::unique_ptr<Object> until(parseExpression());
 		result->setCondition(cond.release());
 		result->setStatements(whileStmts.release());
 		result->setUntilCondition(until.release());
@@ -1053,12 +1053,12 @@ While* Parser::parseWhile()
 
 Object* Parser::parseSubExpression10()
 {
-	std::auto_ptr<Object> expr1(parseSubExpression9());
+	std::unique_ptr<Object> expr1(parseSubExpression9());
 
 	while(hasTokens() && peekToken().getType() == T_OR)
 	{
 		Token tok = getToken();
-		std::auto_ptr<Object> expr2(parseSubExpression9());
+		std::unique_ptr<Object> expr2(parseSubExpression9());
 		expr1.reset(new Or(expr1.release(), expr2.release()));
 		expr1->setLineNumber(tok.getLineNumber());
 		expr1->setColumnNumber(tok.getColumnNumber());
@@ -1069,12 +1069,12 @@ Object* Parser::parseSubExpression10()
 
 Object* Parser::parseSubExpression9()
 {
-	std::auto_ptr<Object> expr1(parseSubExpression8());
+	std::unique_ptr<Object> expr1(parseSubExpression8());
 
 	while(hasTokens() && peekToken().getType() == T_AND)
 	{
 		Token tok = getToken();
-		std::auto_ptr<Object> expr2(parseSubExpression8());
+		std::unique_ptr<Object> expr2(parseSubExpression8());
 		expr1.reset(new And(expr1.release(), expr2.release()));
 		expr1->setLineNumber(tok.getLineNumber());
 		expr1->setColumnNumber(tok.getColumnNumber());
@@ -1093,7 +1093,7 @@ Object* Parser::parseSubExpression8()
 		notResult = true;
 	}
 
-	std::auto_ptr<Object> expr(parseSubExpression7());
+	std::unique_ptr<Object> expr(parseSubExpression7());
 
 	if(notResult)
 	{
@@ -1107,12 +1107,12 @@ Object* Parser::parseSubExpression8()
 
 Object* Parser::parseSubExpression7()
 {
-	std::auto_ptr<Object> expr1(parseSubExpression6());
+	std::unique_ptr<Object> expr1(parseSubExpression6());
 
 	while(hasTokens() && (peekToken().getType() == T_SLASHEQ || peekToken().getType() == T_EQUAL))
 	{
 		Token tok = getToken();
-		std::auto_ptr<Object> expr2(parseSubExpression6());
+		std::unique_ptr<Object> expr2(parseSubExpression6());
 		if(tok.getType() == T_SLASHEQ)
 			expr1.reset(new Unequal(expr1.release(), expr2.release()));
 		else
@@ -1126,13 +1126,13 @@ Object* Parser::parseSubExpression7()
 
 Object* Parser::parseSubExpression6()
 {
-	std::auto_ptr<Object> expr1(parseSubExpression5());
+	std::unique_ptr<Object> expr1(parseSubExpression5());
 
 	while(hasTokens() && (peekToken().getType() == T_LESS || peekToken().getType() == T_GREAT || peekToken().getType() == T_LESSEQ || peekToken().getType() == T_GREATEQ))
 	{
 		Token tok = getToken();
 		unsigned char operation = tok.getType();
-		std::auto_ptr<Object> expr2(parseSubExpression5());
+		std::unique_ptr<Object> expr2(parseSubExpression5());
 		if(operation == T_LESS)
 			expr1.reset(new Less(expr1.release(), expr2.release()));
 		else if(operation == T_GREAT)
@@ -1150,13 +1150,13 @@ Object* Parser::parseSubExpression6()
 
 Object* Parser::parseSubExpression5()
 {
-	std::auto_ptr<Object> expr1(parseSubExpression4());
+	std::unique_ptr<Object> expr1(parseSubExpression4());
 
 	while(hasTokens() && (peekToken().getType() == T_PLUS || peekToken().getType() == T_MINUS))
 	{
 		Token tok = getToken();
 		unsigned char operation = tok.getType();
-		std::auto_ptr<Object> expr2(parseSubExpression4());
+		std::unique_ptr<Object> expr2(parseSubExpression4());
 		if(operation == T_PLUS)
 			expr1.reset(new Add(expr1.release(), expr2.release()));
 		else
@@ -1170,13 +1170,13 @@ Object* Parser::parseSubExpression5()
 
 Object* Parser::parseSubExpression4()
 {
-	std::auto_ptr<Object> expr1(parseSubExpression3());
+	std::unique_ptr<Object> expr1(parseSubExpression3());
 
 	while(hasTokens() && (peekToken().getType() == T_MULTIPLY || peekToken().getType() == T_DIVIDE || peekToken().getType() == T_INTDIVIDE || peekToken().getType() == T_REMAINDER))
 	{
 		Token tok = getToken();
 		unsigned char operation = tok.getType();
-		std::auto_ptr<Object> expr2(parseSubExpression3());
+		std::unique_ptr<Object> expr2(parseSubExpression3());
 		if(operation == T_MULTIPLY)
 			expr1.reset(new Multiply(expr1.release(), expr2.release()));
 		else if(operation == T_DIVIDE)
@@ -1194,12 +1194,12 @@ Object* Parser::parseSubExpression4()
 
 Object* Parser::parseSubExpression3()
 {
-	std::auto_ptr<Object> expr1(parseSubExpression2());
+	std::unique_ptr<Object> expr1(parseSubExpression2());
 
 	while(hasTokens() && peekToken().getType() == T_EXPONENT)
 	{
 		Token tok = getToken();
-		std::auto_ptr<Object> expr2(parseSubExpression2());
+		std::unique_ptr<Object> expr2(parseSubExpression2());
 		expr1.reset(new Exponent(expr1.release(), expr2.release()));
 		expr1->setLineNumber(tok.getLineNumber());
 		expr1->setColumnNumber(tok.getColumnNumber());
@@ -1219,12 +1219,12 @@ Object* Parser::parseSubExpression2()
 		negToken = getToken();
 	}
 
-	std::auto_ptr<Object> result;
+	std::unique_ptr<Object> result;
 
 	if(hasTokens() && peekToken().getType() == T_HASH)
 	{
 		Token lengthToken = getToken();
-		std::auto_ptr<Object> sub(parseSubExpression1());
+		std::unique_ptr<Object> sub(parseSubExpression1());
 		result.reset(new Length(sub.release()));
 		result->setLineNumber(lengthToken.getLineNumber());
 		result->setColumnNumber(lengthToken.getColumnNumber());
@@ -1245,7 +1245,7 @@ Object* Parser::parseSubExpression2()
 
 Object* Parser::parseSubExpression1()
 {
-	std::auto_ptr<Object> result;
+	std::unique_ptr<Object> result;
 
 	if(hasTokens() && peekToken().getType() == T_LPAREN)
 	{
@@ -1258,14 +1258,14 @@ Object* Parser::parseSubExpression1()
 
 	else if(hasTokens() && peekToken().getType() == T_LARROW)
 	{
-		std::auto_ptr<Sequence> seq(new Sequence());
+		std::unique_ptr<Sequence> seq(new Sequence());
 		Token tok = getToken();
 		seq->setLineNumber(tok.getLineNumber());
 		seq->setColumnNumber(tok.getColumnNumber());
 
 		while(hasTokens() && peekToken().getType() != T_RARROW)
 		{
-			std::auto_ptr<Object> subExpr(parseExpression());
+			std::unique_ptr<Object> subExpr(parseExpression());
 			seq->pushObject(subExpr.release());
 			if(hasTokens() && peekToken().getType() != T_COMMA)
 				break;
@@ -1287,20 +1287,20 @@ Object* Parser::parseSubExpression1()
 
 Object* Parser::parseSubExpression1a(Object* pExpr)
 {
-	std::auto_ptr<Object> expr(pExpr);
+	std::unique_ptr<Object> expr(pExpr);
 
 	if(hasTokens() && peekToken().getType() == T_LBRACKET)
 	{
 		Token tok = getToken();
 
-		std::auto_ptr<Object> num1;
+		std::unique_ptr<Object> num1;
 		if(hasTokens() && peekToken().getType() != T_COLON)
 			num1.reset(parseExpression());
 
 		if(hasTokens() && peekToken().getType() == T_RBRACKET)
 		{
 			getToken();
-			std::auto_ptr<Select> result(new Select(expr.release(), num1.release()));
+			std::unique_ptr<Select> result(new Select(expr.release(), num1.release()));
 			result->setLineNumber(tok.getLineNumber());
 			result->setColumnNumber(tok.getColumnNumber());
 			return parseSubExpression1a(result.release());
@@ -1310,7 +1310,7 @@ Object* Parser::parseSubExpression1a(Object* pExpr)
 			throw ParserSyntaxException(getToken(), "Expected ':' or ']'!");
 		getToken();
 
-		std::auto_ptr<Object> num2;
+		std::unique_ptr<Object> num2;
 		if(hasTokens() && peekToken().getType() != T_RBRACKET)
 			num2.reset(parseExpression());
 
@@ -1318,7 +1318,7 @@ Object* Parser::parseSubExpression1a(Object* pExpr)
 			throw ParserSyntaxException(getToken(), "Expected ']'!");
 		getToken();
 
-		std::auto_ptr<Slice> result(new Slice(expr.release(), num1.release(), num2.release()));
+		std::unique_ptr<Slice> result(new Slice(expr.release(), num1.release(), num2.release()));
 		result->setLineNumber(tok.getLineNumber());
 		result->setColumnNumber(tok.getColumnNumber());
 		return parseSubExpression1a(result.release());
@@ -1330,7 +1330,7 @@ Object* Parser::parseSubExpression1a(Object* pExpr)
 		Token tok = getToken();
 
 		// Create a new call
-		std::auto_ptr<Call> procCall(new Call());
+		std::unique_ptr<Call> procCall(new Call());
 		procCall->setLineNumber(expr->getLineNumber());
 		procCall->setColumnNumber(expr->getColumnNumber());
 
@@ -1351,7 +1351,7 @@ Object* Parser::parseSubExpression1a(Object* pExpr)
 				getToken();
 
 			// Create a new object for the argument
-			std::auto_ptr<Object> currentArg(parseExpression());
+			std::unique_ptr<Object> currentArg(parseExpression());
 
 			// Store the parameter depending upon if it is in-out or not
 			procCall->pushArgument(currentArg.release(), isInOut);

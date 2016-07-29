@@ -58,8 +58,8 @@ Object* Remainder::evaluate()
 	if(arg2 == 0)
 		throw MissingArgumentException(getLineNumber(), getColumnNumber(), OBJ_INTEGER, 2);
 
-	std::auto_ptr<Object> obj1(arg1->evaluate());
-	std::auto_ptr<Object> obj2(arg2->evaluate());
+	std::unique_ptr<Object> obj1(arg1->evaluate());
+	std::unique_ptr<Object> obj2(arg2->evaluate());
 
 	if(obj1->getType() != OBJ_INTEGER)
 		throw InvalidTypeException(getLineNumber(), getColumnNumber(), OBJ_INTEGER, obj1->getType(), 1);

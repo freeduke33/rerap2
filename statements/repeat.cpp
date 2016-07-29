@@ -55,7 +55,7 @@ void Repeat::setStatements(NodeList* pList)
 Outcome Repeat::execute()
 {
 	// Make sure that the counter evaluates to a number
-	std::auto_ptr<Object> countEval(counter->evaluate());
+	std::unique_ptr<Object> countEval(counter->evaluate());
 	if(countEval->getType() != OBJ_INTEGER)
 		throw InvalidTypeException(counter->getLineNumber(), counter->getColumnNumber(), OBJ_INTEGER, countEval->getType());
 	long loopNum = static_cast<Integer*>(countEval.get())->getValue();
@@ -72,7 +72,7 @@ Outcome Repeat::execute()
 		// Check the while condition, if present
 		if(whileCond != 0)
 		{
-			std::auto_ptr<Object> whileCondEval(whileCond->evaluate());
+			std::unique_ptr<Object> whileCondEval(whileCond->evaluate());
 			if(whileCondEval->getType() != OBJ_LOGICAL)
 				throw InvalidTypeException(whileCond->getLineNumber(), whileCond->getColumnNumber(), OBJ_LOGICAL, whileCondEval->getType());
 			bool whileCondResult = static_cast<Logical*>(whileCondEval.get())->getValue();
@@ -87,7 +87,7 @@ Outcome Repeat::execute()
 		// Evaluate the until condition, if present
 		if(untilCond != 0)
 		{
-			std::auto_ptr<Object> untilEval(untilCond->evaluate());
+			std::unique_ptr<Object> untilEval(untilCond->evaluate());
 
 			if(untilEval->getType() != OBJ_LOGICAL)
 				throw InvalidTypeException(untilCond->getLineNumber(), untilCond->getColumnNumber(), OBJ_LOGICAL, untilEval->getType());

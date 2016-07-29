@@ -58,8 +58,8 @@ Object* Equal::evaluate()
 	if(arg2 == 0)
 		throw MissingArgumentException(getLineNumber(), getColumnNumber(), OBJ_INTEGER | OBJ_REAL | OBJ_SEQUENCE | OBJ_TEXT | OBJ_LOGICAL, 2);
 
-	std::auto_ptr<Object> obj1(arg1->evaluate());
-	std::auto_ptr<Object> obj2(arg2->evaluate());
+	std::unique_ptr<Object> obj1(arg1->evaluate());
+	std::unique_ptr<Object> obj2(arg2->evaluate());
 
 	if(obj1->getType() == OBJ_EMPTY && obj2->getType() == OBJ_EMPTY)
 		return new Logical(true);
@@ -138,7 +138,7 @@ Object* Equal::evaluate()
 
 		for(unsigned int i = 0; i < cast1->getLength(); i++)
 		{
-			std::auto_ptr<Object> eqResult(Equal(cast1->getObject(i)->clone(), cast2->getObject(i)->clone()).evaluate());
+			std::unique_ptr<Object> eqResult(Equal(cast1->getObject(i)->clone(), cast2->getObject(i)->clone()).evaluate());
 			Logical* logResult = static_cast<Logical*>(eqResult.get());
 			if(logResult->getValue() == false)
 				return new Logical(false);

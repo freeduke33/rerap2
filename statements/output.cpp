@@ -49,7 +49,7 @@ Outcome Output::execute()
 	for(unsigned int i = 0; i < exprs.size(); i++)
 	{
 		// Evaluate the current expression
-		std::auto_ptr<Object> val(exprs.at(i)->evaluate());
+		std::unique_ptr<Object> val(exprs.at(i)->evaluate());
 
 		if(val->getType() == OBJ_EMPTY)
 			std::cout << "empty";

@@ -48,7 +48,7 @@ Object* Length::evaluate()
 	if(arg == 0)
 		throw MissingArgumentException(getLineNumber(), getColumnNumber(), OBJ_TEXT | OBJ_SEQUENCE, 1);
 
-	std::auto_ptr<Object> obj(arg->evaluate());
+	std::unique_ptr<Object> obj(arg->evaluate());
 
 	if(obj->getType() == OBJ_EMPTY)
 		return new Integer(0);

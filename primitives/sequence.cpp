@@ -95,7 +95,7 @@ Object* Sequence::evaluate()
 
 	for(unsigned int i = 0; i < getLength(); i++)
 	{
-		std::auto_ptr<Object> curObject(getObject(i)->clone());
+		std::unique_ptr<Object> curObject(getObject(i)->clone());
 		result->pushObject(curObject->evaluate());
 	}
 

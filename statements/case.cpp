@@ -51,7 +51,7 @@ Outcome Case::execute()
 	{
 		for(unsigned int i = 0; i < whenStmts.size(); i++)
 		{
-			std::auto_ptr<Object> whenVal(whenStmts.at(i).first->evaluate());
+			std::unique_ptr<Object> whenVal(whenStmts.at(i).first->evaluate());
 
 			if(whenVal->getType() != OBJ_LOGICAL)
 				throw InvalidTypeException(getLineNumber(), getColumnNumber(), OBJ_LOGICAL, whenVal->getType());
@@ -70,15 +70,15 @@ Outcome Case::execute()
 	}
 
 	// If a condition is specified
-	std::auto_ptr<Object> condVal(condition->evaluate());
+	std::unique_ptr<Object> condVal(condition->evaluate());
 
 	// Begin looking through the list of when conditions/statements
 	for(unsigned int i = 0; i < whenStmts.size(); i++)
 	{
 		// Look for an equal condition
-		std::auto_ptr<Object> whenVal(whenStmts.at(i).first->evaluate());
+		std::unique_ptr<Object> whenVal(whenStmts.at(i).first->evaluate());
 
-		std::auto_ptr<Object> equOperation(Equal(whenVal.release(), condVal->clone()).evaluate());
+		std::unique_ptr<Object> equOperation(Equal(whenVal.release(), condVal->clone()).evaluate());
 		bool execWhen = static_cast<Logical*>(equOperation.get())->getValue();
 
 		if(execWhen)

@@ -42,14 +42,14 @@ Object* SpecialFunction::evaluate()
 	if(args.size() == 0)
 		throw Excep(getLineNumber(), getColumnNumber(), "Expected argument to special function!");
 
-	std::auto_ptr<Object> arg1(args.at(0)->evaluate());
+	std::unique_ptr<Object> arg1(args.at(0)->evaluate());
 
 	if(id == SPF_INDEX)
 	{
 		if(args.size() != 2)
 			throw Excep(getLineNumber(), getColumnNumber(), "Invalid number of arguments passed to special function!");
 
-		std::auto_ptr<Object> arg2(args.at(1)->evaluate());
+		std::unique_ptr<Object> arg2(args.at(1)->evaluate());
 
 		if(arg2->getType() == OBJ_TEXT)
 		{
@@ -73,7 +73,7 @@ Object* SpecialFunction::evaluate()
 
 				for(unsigned int i = 0; i < cast->getLength(); i++)
 				{
-					std::auto_ptr<Logical> eqOp(static_cast<Logical*>(Equal(arg1->clone(), cast->getObject(i)->clone()).evaluate()));
+					std::unique_ptr<Logical> eqOp(static_cast<Logical*>(Equal(arg1->clone(), cast->getObject(i)->clone()).evaluate()));
 					if(eqOp->getValue() == true)
 						return new Integer(i + 1);
 				}

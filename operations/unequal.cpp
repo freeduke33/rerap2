@@ -53,7 +53,7 @@ void Unequal::setArgument2(Object* pArg)
 /*** Evaluate this object ***/
 Object* Unequal::evaluate()
 {
-	std::auto_ptr<Object> eqResult;
+	std::unique_ptr<Object> eqResult;
 	try
 	{
 		eqResult.reset(Equal(arg1->clone(), arg2->clone()).evaluate());

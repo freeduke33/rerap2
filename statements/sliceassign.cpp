@@ -63,8 +63,8 @@ void SliceAssign::setExpression(Object* pExpr)
 /*** Execute this node ***/
 Outcome SliceAssign::execute()
 {
-	std::auto_ptr<Object> evalIndex1(index1->evaluate());
-	std::auto_ptr<Object> evalIndex2(index2->evaluate());
+	std::unique_ptr<Object> evalIndex1(index1->evaluate());
+	std::unique_ptr<Object> evalIndex2(index2->evaluate());
 
 	// Confirm that the indices given are integers
 	if(evalIndex1->getType() != OBJ_INTEGER)
@@ -81,8 +81,8 @@ Outcome SliceAssign::execute()
 	if(numIndex2 <= 0)
 		throw InvalidIndexException(getLineNumber(), getColumnNumber(), numIndex2);
 
-	std::auto_ptr<Object> evalTarget(target->evaluate());
-	std::auto_ptr<Object> evalExpr(expr->evaluate());
+	std::unique_ptr<Object> evalTarget(target->evaluate());
+	std::unique_ptr<Object> evalExpr(expr->evaluate());
 
 	if(evalTarget->getType() == OBJ_TEXT)
 	{

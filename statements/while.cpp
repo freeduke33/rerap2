@@ -68,7 +68,7 @@ Outcome While::execute()
 	do
 	{
 		// Check the condition
-		std::auto_ptr<Object> condEval(cond->evaluate());
+		std::unique_ptr<Object> condEval(cond->evaluate());
 		if(condEval->getType() != OBJ_LOGICAL)
 			throw InvalidTypeException(cond->getLineNumber(), cond->getColumnNumber(), OBJ_LOGICAL, condEval->getType());
 		bool condResult = dynamic_cast<Logical*>(condEval.get())->getValue();
@@ -81,7 +81,7 @@ Outcome While::execute()
 		// Evaluate the until condition, if present
 		if(until != 0)
 		{
-			std::auto_ptr<Object> untilEval(until->evaluate());
+			std::unique_ptr<Object> untilEval(until->evaluate());
 
 			if(untilEval->getType() != OBJ_LOGICAL)
 				throw InvalidTypeException(until->getLineNumber(), until->getColumnNumber(), OBJ_LOGICAL, untilEval->getType());

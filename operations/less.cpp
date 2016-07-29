@@ -53,7 +53,7 @@ void Less::setArgument2(Object* pArg)
 /*** Evaluate this object ***/
 Object* Less::evaluate()
 {
-	std::auto_ptr<Object> greatOperation;
+	std::unique_ptr<Object> greatOperation;
 	try
 	{
 		greatOperation.reset(Greater(arg1->clone(), arg2->clone()).evaluate());
@@ -70,8 +70,8 @@ Object* Less::evaluate()
 	{
 		throw e;
 	}
-	std::auto_ptr<Object> equalOperation(Equal(arg1->clone(), arg2->clone()).evaluate());
-	std::auto_ptr<Object> orOperation(Or(greatOperation->clone(), equalOperation->clone()).evaluate());
+	std::unique_ptr<Object> equalOperation(Equal(arg1->clone(), arg2->clone()).evaluate());
+	std::unique_ptr<Object> orOperation(Or(greatOperation->clone(), equalOperation->clone()).evaluate());
 	Object* result = Not(orOperation->clone()).evaluate();
 
 	return result;

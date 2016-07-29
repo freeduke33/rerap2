@@ -53,7 +53,7 @@ void GreatEq::setArgument2(Object* pArg)
 /*** Evaluate this object ***/
 Object* GreatEq::evaluate()
 {
-	std::auto_ptr<Object> lessOperation;
+	std::unique_ptr<Object> lessOperation;
 	try
 	{
 		lessOperation.reset(Less(arg1->clone(), arg2->clone()).evaluate());
