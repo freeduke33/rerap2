@@ -153,6 +153,8 @@ Object* Call::evaluate()
 	std::unique_ptr<Object> retVal;
 	Outcome retOut = proc->execute();
 	retVal.reset(retOut.getObject());
+	if(!retVal)
+		retVal.reset(new Object());
 
 	// Use the transfer vector to set the variables on the lower level to the ones on the current level
 	for(unsigned int i = 0; i < transfer.size(); i++)
