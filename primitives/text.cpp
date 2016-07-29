@@ -20,6 +20,7 @@
 #include "../exceptions/invalidindex.h"
 #include <cwchar>
 #include <iostream>
+#include <cstring>
 
 /*** Constructor ***/
 Text::Text()
@@ -73,10 +74,12 @@ void Text::setValue(std::string pValue)
 {
 	mbstate_t state;
 	const char* buf = pValue.c_str();
+	memset(&state, 0, sizeof(state));
 	size_t len = mbsrtowcs(NULL, &buf, 0, &state);
 	if (len > 0 && len != (size_t)-1) {
 		buf = pValue.c_str();
 		wchar_t* tmp = new wchar_t[len+1];
+		memset(&state, 0, sizeof(state));
 		mbsrtowcs(tmp, &buf, len, &state);
 		tmp[len] = L'\0';
 		value = std::wstring(tmp);
@@ -95,10 +98,12 @@ void Text::setValue(std::wstring pValue)
 {
 	mbstate_t state;
 	const wchar_t* buf = pValue.c_str();
+	memset(&state, 0, sizeof(state));
 	size_t len = wcsrtombs(NULL, &buf, 0, &state);
 	if (len > 0 && len != (size_t)-1) {
 		buf = pValue.c_str();
 		char* tmp = new char[len+1];
+		memset(&state, 0, sizeof(state));
 		wcsrtombs(tmp, &buf, len, &state);
 		tmp[len] = '\0';
 		value = pValue;
@@ -117,6 +122,7 @@ void Text::setValue(wchar_t pValue)
 {
 	mbstate_t state;
 	char tmp[6 + 1]; // UTF8 max bytes + terminal symbol
+	memset(&state, 0, sizeof(state));
 	size_t len = wcrtomb(tmp, pValue, &state);
 	if (len > 0 && len != (size_t)-1) {
 		tmp[len] = '\0';
