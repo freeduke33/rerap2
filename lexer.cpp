@@ -131,6 +131,8 @@ Token Lexer::getNextToken()
 	checkKeyword(nextToken, "при", T_WHEN);
 	checkKeyword(nextToken, "while", T_WHILE);
 	checkKeyword(nextToken, "пока", T_WHILE);
+	checkKeyword(nextToken, "все", T_G_END);
+	checkKeyword(nextToken, "всё", T_G_END);
 
 	checkKeyword(nextToken, "yes", T_YES);
 	checkKeyword(nextToken, "да", T_YES);
