@@ -8,6 +8,10 @@ k := 1;
             output: "три";
         все;
         вывод: k;
-    все;
+    всё;
     k:= k + 1;
 кц по k > 10;
+
+if yes then
+   output: "four"
+done
