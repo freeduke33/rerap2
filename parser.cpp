@@ -476,7 +476,7 @@ For* Parser::parseFor()
 
 	// Add commands until "od" or "until" is found
 	std::unique_ptr<NodeList> stmts(new NodeList());
-	while(hasTokens() && peekToken().getType() != T_OD && peekToken().getType() != T_UNTIL)
+	while(hasTokens() && peekToken().getType() != T_OD && peekToken().getType() != T_UNTIL && peekToken().getType() != T_G_END)
 	{
 		stmts->pushNode(parseStatement());
 		parseSeparation();
@@ -488,7 +488,7 @@ For* Parser::parseFor()
 		getToken();
 		result->setUntilCondition(parseExpression());
 	}
-	else if(hasTokens() && peekToken().getType() == T_OD)
+	else if(hasTokens() && (peekToken().getType() == T_OD || peekToken().getType() == T_G_END))
 		getToken();
 	else
 		throw ParserSyntaxException(getToken(), "Expected \"od\" or \"until\" command!");
@@ -908,14 +908,14 @@ Repeat* Parser::parseRepeat()
 
 	// Add commands until "od" or "until" is found
 	std::unique_ptr<NodeList> stmts(new NodeList());
-	while(hasTokens() && !(peekToken().getType() == T_OD || peekToken().getType() == T_UNTIL))
+	while(hasTokens() && !(peekToken().getType() == T_OD || peekToken().getType() == T_UNTIL || peekToken().getType() == T_G_END))
 	{
 		stmts->pushNode(parseStatement());
 		parseSeparation();
 	}
 	result->setStatements(stmts.release());
 
-	if(hasTokens() && peekToken().getType() == T_OD)
+	if(hasTokens() && (peekToken().getType() == T_OD || peekToken().getType() == T_G_END))
 		getToken();
 	else if(hasTokens() && peekToken().getType() == T_UNTIL)
 	{
@@ -1019,7 +1019,7 @@ While* Parser::parseWhile()
 
 	// Add commands until "od" or "until" is found
 	std::unique_ptr<NodeList> whileStmts(new NodeList());
-	while(hasTokens() && !(peekToken().getType() == T_OD || peekToken().getType() == T_UNTIL))
+	while(hasTokens() && !(peekToken().getType() == T_OD || peekToken().getType() == T_UNTIL || peekToken().getType() == T_G_END))
 	{
 		whileStmts->pushNode(parseStatement());
 		parseSeparation();
@@ -1029,7 +1029,7 @@ While* Parser::parseWhile()
 	result->setLineNumber(tok.getLineNumber());
 	result->setColumnNumber(tok.getColumnNumber());
 
-	if(hasTokens() && peekToken().getType() == T_OD)
+	if(hasTokens() && (peekToken().getType() == T_OD || peekToken().getType() == T_G_END))
 	{
 		getToken();
 		result->setCondition(cond.release());
